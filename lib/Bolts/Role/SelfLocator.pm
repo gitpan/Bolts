@@ -1,10 +1,10 @@
 package Bolts::Role::SelfLocator;
-$Bolts::Role::SelfLocator::VERSION = '0.142650';
+$Bolts::Role::SelfLocator::VERSION = '0.142860';
 # ABSTRACT: Makes a Moose object into a locator
 
 use Moose::Role;
 
-with 'Bolts::Role::Locator';
+with 'Bolts::Role::RootLocator';
 
 
 sub root { $_[0] }
@@ -23,11 +23,21 @@ Bolts::Role::SelfLocator - Makes a Moose object into a locator
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 DESCRIPTION
 
 Any Moose object can turned into a L<Bolts::Role::Locator> easily just by implementing this role.
+
+=head1 ROLES
+
+=over
+
+=item *
+
+L<Bolts::Role::Locator>
+
+=back
 
 =head1 METHODS
 

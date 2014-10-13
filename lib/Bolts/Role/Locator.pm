@@ -1,118 +1,20 @@
 package Bolts::Role::Locator;
-$Bolts::Role::Locator::VERSION = '0.142650';
+$Bolts::Role::Locator::VERSION = '0.142860';
 # ABSTRACT: Interface for locating artifacts in a bag
 
 use Moose::Role;
 
-use Bolts::Locator;
-use Bolts::Util;
-use Carp ();
-use Safe::Isa;
-use Scalar::Util ();
+
+requires 'acquire';
 
 
-requires 'root';
+requires 'acquire_all';
 
 
-sub acquire {
-    my ($self, @path) = @_;
-
-    my $parameters = {};
-    if (@path > 1 and ref $path[-1]) {
-        $parameters = pop @path;
-    }
-    
-    my $current_path = '';
-
-    my $item = $self->root;
-    while (@path) {
-        my $component = shift @path;
-
-        my $bag = $item;
-        $item = $self->_get_from($bag, $component, $current_path);
-        $item = $self->resolve($bag, $item, $parameters);
-
-        $current_path .= ' ' if $current_path;
-        $current_path .= qq["$component"];
-    }
-
-    return $item;
-}
+requires 'resolve';
 
 
-sub acquire_all {
-    my ($self, @path) = @_;
-
-    my $parameters = {};
-    if (@path > 1 and ref $path[-1]) {
-        $parameters = pop @path;
-    }
-    
-    my $bag = $self->acquire(@path);
-    if (ref $bag eq 'ARRAY') {
-        return [
-            map { $self->resolve($bag, $_, $parameters) } @$bag
-        ];
-    }
-
-    else {
-        return [];
-    }
-}
-
-
-sub resolve {
-    my ($self, $bag, $item, $parameters) = @_;
-
-    return $item->get($bag, %$parameters)
-        if $item->$_can('does')
-       and $item->$_does('Bolts::Role::Artifact');
-
-    return $item;
-}
-
-
-sub get {
-    my ($self, $component) = @_;
-    return $self->_get_from($self->root, $component);
-}
-
-sub _get_from {
-    my ($self, $bag, $component, $current_path) = @_;
-    $current_path //= '';
-
-    Carp::croak("unable to acquire artifact for [$current_path]")
-        unless defined $bag;
-
-    # A bag can be any blessed object...
-    if (Scalar::Util::blessed($bag)) {
-
-        # So long as it has that method
-        if ($bag->can($component)) {
-            return $bag->$component;
-        }
-        
-        else {
-            Carp::croak(qq{no artifact named "$component" at [$current_path]});
-        }
-    }
-
-    # Or any unblessed hash
-    elsif (ref $bag eq 'HASH') {
-        return $bag->{ $component };
-    }
-
-    # Or any unblessed array
-    elsif (ref $bag eq 'ARRAY') {
-        return $bag->[ $component ];
-    }
-
-    # But nothing else...
-    else {
-        my $path = join ' ', grep defined, $current_path, $component;
-        Carp::croak(qq{not able to acquire artifact for [$path]});
-    }
-}
+requires 'get';
 
 1;
 
@@ -128,19 +30,15 @@ Bolts::Role::Locator - Interface for locating artifacts in a bag
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 DESCRIPTION
 
-This is the interface that any locator must implement. A locator's primary job is to provide a way to find artifacts within a bag or selection of bags. This performs the acquisition and resolution process. This actually also implements everything needed for the process except for the L</root>.
+This is the interface that any locator must implement. A locator's primary job is to provide a way to find artifacts within a bag or selection of bags. This performs the acquisition and resolution process.
+
+The reference implementation of this interface is found in L<Bolts::Role::RootLocator>.
 
 =head1 REQUIRED METHODS
-
-=head2 root
-
-This is the object to use as the bag to start searching. It may be an object, a reference to an array, or a reference to a hash.
-
-=head1 METHODS
 
 =head2 acquire
 

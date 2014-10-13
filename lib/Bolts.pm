@@ -1,9 +1,12 @@
 package Bolts;
-$Bolts::VERSION = '0.142650';
+$Bolts::VERSION = '0.142860';
 # ABSTRACT: An Inversion of Control framework for Perl
 
 use Moose ();
 use Moose::Exporter;
+
+# Register attribute traits
+use Bolts::Meta::Attribute::Trait::Initializer;
 
 use Class::Load ();
 use Moose::Util::MetaRole ();
@@ -197,13 +200,14 @@ sub artifact {
 
         my $i = 0;
         for my $def (@$push) {
-            $i++;
             my $key = $def->{key} // $i;
 
             push @injectors, _injector(
                 $meta, 'push', 'store_array',
                 $key, $def,
             );
+
+            $i++;
         }
     }
 
@@ -228,6 +232,7 @@ sub artifact {
     my $blueprint  = $meta->acquire('blueprint', $blueprint_name, \%params);
 
     my $artifact = Bolts::Artifact->new(
+        meta_locator => $meta,
         name         => $name,
         blueprint    => $blueprint,
         scope        => $scope,
@@ -347,7 +352,7 @@ Bolts - An Inversion of Control framework for Perl
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 

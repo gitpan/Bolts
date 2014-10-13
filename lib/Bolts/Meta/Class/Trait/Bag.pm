@@ -1,6 +1,6 @@
 package Bolts::Meta::Class::Trait::Bag;
-$Bolts::Meta::Class::Trait::Bag::VERSION = '0.142650';
-# ABSTRACT: Metaclass role for bags built with Bolts::Bag
+$Bolts::Meta::Class::Trait::Bag::VERSION = '0.142860';
+# ABSTRACT: Metaclass role for Bolts-built bags
 
 use Moose::Role;
 
@@ -117,11 +117,11 @@ __END__
 
 =head1 NAME
 
-Bolts::Meta::Class::Trait::Bag - Metaclass role for bags built with Bolts::Bag
+Bolts::Meta::Class::Trait::Bag - Metaclass role for Bolts-built bags
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 DESCRIPTION
 

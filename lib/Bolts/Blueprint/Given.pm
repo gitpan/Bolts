@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Given;
-$Bolts::Blueprint::Given::VERSION = '0.142650';
+$Bolts::Blueprint::Given::VERSION = '0.142860';
 # ABSTRACT: Used to pass parameters from the user during acquisition into the injector
 
 use Moose;
@@ -57,7 +57,7 @@ Bolts::Blueprint::Given - Used to pass parameters from the user during acquisiti
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 

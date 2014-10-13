@@ -33,9 +33,9 @@ my $meta = Bolts::Bag->start_bag(
 $meta->add_artifact(value_1 => 42);
 $meta->add_artifact(value_2 => sub { 43 });
 $meta->add_artifact(value_3 => Bolts::Artifact->new(
-    name      => 'value_3',
-    scope     => $meta->locator->acquire('scope', 'singleton'),
-    blueprint => $meta->locator->acquire('blueprint', 'acquired', {
+    name         => 'value_3',
+    scope        => $meta->locator->acquire('scope', 'singleton'),
+    blueprint    => $meta->locator->acquire('blueprint', 'acquired', {
         path => [ '__value_3' ],
     }),
 ));

@@ -1,5 +1,5 @@
 package Bolts::Artifact::Thunk;
-$Bolts::Artifact::Thunk::VERSION = '0.142650';
+$Bolts::Artifact::Thunk::VERSION = '0.142860';
 # ABSTRACT: Simplified artifact implementation
 
 use Moose;
@@ -34,7 +34,7 @@ Bolts::Artifact::Thunk - Simplified artifact implementation
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 

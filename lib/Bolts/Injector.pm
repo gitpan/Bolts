@@ -1,5 +1,5 @@
 package Bolts::Injector;
-$Bolts::Injector::VERSION = '0.142650';
+$Bolts::Injector::VERSION = '0.142860';
 # ABSTRACT: inject options and parameters into artifacts
 
 use Moose::Role;
@@ -8,6 +8,15 @@ our @CARP_NOT = qw(
     Bolts::Injector::Parameter::ByName
     Bolts::Artifact
 );
+
+
+has init_locator => (
+    is          => 'ro',
+    isa         => 'Bolts::Role::Locator',
+    weak_ref    => 1,
+);
+
+#with 'Bolts::Role::Initializer';
 
 
 has key => (
@@ -21,6 +30,7 @@ has blueprint => (
     is          => 'ro',
     does        => 'Bolts::Blueprint::Role::Injector',
     required    => 1,
+    traits      => [ 'Bolts::Initializer' ],
 );
 
 
@@ -108,7 +118,7 @@ Bolts::Injector - inject options and parameters into artifacts
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 
@@ -160,6 +170,10 @@ injected.
 
 =head1 ATTRIBUTES
 
+=head2 init_locator
+
+If provided with a reference to the meta-locator for the bag to which the injector is going to be attached, the L<blueprint> may be given as initializers.
+
 =head2 key
 
 This is the key used to desribe what the injector is injecting. This might be a parameter name, an array index, or method name (or any other descriptive string).
@@ -169,6 +183,14 @@ This is the key used to desribe what the injector is injecting. This might be a 
 This is the blueprint that defines how the value being injected will be constructed. So, not only is the injector part of the process of construction, but it has its own blueprint for constructing the value needed to perform the injection.
 
 All the injector needs to worry about is the L</get> method, which handles the process of getting and validating the value for you.
+
+Instead of passing the blueprint object in directly, you can provide an initializer in an array reference, similar to what you would pass to C<acquire> to get the blueprint from the meta-locator, e.g.:
+
+    blueprint => bolts_init('blueprint', 'acquire', {
+        path => [ 'foo' ],
+    }),
+
+If so, you must provide an L</init_locator>.
 
 =head2 does
 

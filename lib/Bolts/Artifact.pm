@@ -1,5 +1,5 @@
 package Bolts::Artifact;
-$Bolts::Artifact::VERSION = '0.142650';
+$Bolts::Artifact::VERSION = '0.142860';
 # ABSTRACT: Tools for resolving an artifact value
 
 use Moose;
@@ -11,12 +11,17 @@ use Carp ();
 use List::MoreUtils qw( all );
 use Moose::Util::TypeConstraints;
 use Safe::Isa;
-use Scalar::Util qw( weaken );
+use Scalar::Util qw( weaken reftype );
 
 
-subtype 'Bolts::Injector::List',
-     as 'ArrayRef',
-  where { all { $_->$_does('Bolts::Injector') } @$_ };
+has init_locator => (
+    is          => 'ro',
+    does        => 'Bolts::Role::Locator',
+    weak_ref    => 1,
+);
+
+with 'Bolts::Role::Initializer';
+
 
 has name => (
     is          => 'ro',
@@ -29,6 +34,7 @@ has blueprint => (
     is          => 'ro',
     does        => 'Bolts::Blueprint',
     required    => 1,
+    traits      => [ 'Bolts::Initializer' ],
 );
 
 
@@ -36,6 +42,7 @@ has scope => (
     is          => 'ro',
     does        => 'Bolts::Scope',
     required    => 1,
+    traits      => [ 'Bolts::Initializer' ],
 );
 
 
@@ -57,16 +64,20 @@ has inference_done => (
 );
 
 
+subtype 'Bolts::Injector::List',
+     as 'ArrayRef',
+  where { all { $_->$_does('Bolts::Injector') } @$_ };
+
 has injectors => (
     is          => 'ro',
     isa         => 'Bolts::Injector::List',
     required    => 1,
-    default     => sub { [] },
-    traits      => [ 'Array' ],
+    traits      => [ 'Array', 'Bolts::Initializer' ],
     handles     => {
         all_injectors => 'elements',
         add_injector  => 'push',
     },
+    default     => sub { [] },
 );
 
 
@@ -91,11 +102,11 @@ sub infer_injectors {
     # warn Dumper($self);
     # $self->inference_is_done(1);
 
-    my $loc      = locator_for($bag);
-    my $meta_loc = meta_locator_for($bag);
-
     # Use inferences to collect the list of injectors
     if ($self->infer ne 'none') {
+        my $loc      = locator_for($bag);
+        my $meta_loc = meta_locator_for($bag);
+
         my $inference_type = $self->infer;
 
         my $inferences = $meta_loc->acquire_all('inference');
@@ -260,7 +271,7 @@ Bolts::Artifact - Tools for resolving an artifact value
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 
@@ -268,16 +279,17 @@ version 0.142650
     my $meta = Bolts::Bag->start_bag;
 
     my $artifact = Bolts::Artifact->new(
-        name       => 'key',
-        blueprint  => $meta->acquire('blueprint', 'factory', {
+        meta_locator => $meta,
+        name         => 'key',
+        blueprint    => [ 'blueprint', 'factory', {
             class => 'MyApp::Thing',
-        }),
-        scope      => $meta->acquire('scope', 'singleton'),
-        infer      => 'acquisition',
-        parameters => {
-            foo => option {
+        } ],
+        scope        => [ 'scope', 'singleton' ],
+        infer        => 'acquisition',
+        parameters   => {
+            foo => [ 'blueprint', 'given', {
                 isa => 'Str',
-            },
+            } ],
             bar => value 42,
         },
     );
@@ -294,9 +306,17 @@ This is the primary implementation of L<Bolts::Role::Artifact> with all the feat
 
 L<Bolts::Role::Artifact>
 
+=item *
+
+L<Bolts::Role::Initializer>
+
 =back
 
 =head1 ATTRIBUTES
+
+=head2 init_locator
+
+If provided with a references to the meta-locator for the bag to which the artifact is going to be attached, the L</blueprint>, L</scope>, and L</injectors> attributes may be given as initializers rather than as objects.
 
 =head2 name
 
@@ -306,9 +326,23 @@ B<Required.> This sets the name of the artifact that is being created. This is p
 
 B<Required.> This sets the L<Bolts::Blueprint> used to construct the artifact.
 
+Instead of passing the blueprint object in directly, you can provide an initializer in an array reference, similar to what you would pass to C<acquire> to get the blueprint from the meta-locator, e.g.:
+
+  blueprint => bolts_init('blueprint', 'acquire', {
+      path => [ 'foo' ],
+  }),
+
+If so, you must provide an L</init_locator>.
+
 =head2 scope
 
 B<Required.> This sets the L<Bolts::Scope> used to manage the object's lifecycle.
+
+Instead of passing the scope object in directly, you can provide an initializer in an array reference, similar to what you would pass to C<acquire> to get the scope from the meta-locator, e.g.:
+
+  scope => bolts_init('scope', 'singleton'),
+
+If so, you must provide a L</init_locator>.
 
 =head2 infer
 
@@ -341,6 +375,19 @@ Normally, this is a true value after the automatic inference of injectors has be
 =head2 injectors
 
 This is an array of L<Bolts::Injector>s, which are used to inject values into or after the construction process. Anything set here will take precedent over inferrence.
+
+Instead of passing the array of injector objects in directly, you can provide an array of initializers, each as an array reference, similar to what you would pass to C<acquire> for each to get each injector from the meta-locator, e.g.:
+
+  injector => [
+      bolts_init('injector', 'parameter_name', {
+          key       => 'foo',
+          blueprint => bolts_init('blueprint', 'literal', {
+              value => 42,
+          }),
+      }),
+  ]
+
+If so, you must provide a L</init_locator>.
 
 =head2 does
 

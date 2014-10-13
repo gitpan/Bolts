@@ -1,5 +1,5 @@
 package Bolts::Locator;
-$Bolts::Locator::VERSION = '0.142650';
+$Bolts::Locator::VERSION = '0.142860';
 # ABSTRACT: General purpose locator
 
 use Moose;
@@ -11,7 +11,7 @@ has root => (
     required    => 1,
 );
 
-with 'Bolts::Role::Locator';
+with 'Bolts::Role::RootLocator';
 
 
 override BUILDARGS => sub {
@@ -39,7 +39,7 @@ Bolts::Locator - General purpose locator
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 
@@ -60,7 +60,7 @@ This can be used to wrap any object, array, or hash reference in a L<Bolts::Role
 
 =item *
 
-L<Bolts::Role::Locator>
+L<Bolts::Role::RootLocator>
 
 =back
 

@@ -1,5 +1,5 @@
 package Bolts::Role::Artifact;
-$Bolts::Role::Artifact::VERSION = '0.142650';
+$Bolts::Role::Artifact::VERSION = '0.142860';
 # ABSTRACT: The role implemented by resolved artifacts
 
 use Moose::Role;
@@ -24,7 +24,7 @@ Bolts::Role::Artifact - The role implemented by resolved artifacts
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 DESCRIPTION
 

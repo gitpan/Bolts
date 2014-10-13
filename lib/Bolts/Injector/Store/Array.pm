@@ -1,5 +1,5 @@
 package Bolts::Injector::Store::Array;
-$Bolts::Injector::Store::Array::VERSION = '0.142650';
+$Bolts::Injector::Store::Array::VERSION = '0.142860';
 # ABSTRACT: Inject dependencies into array artifacts
 
 use Moose;
@@ -38,7 +38,7 @@ Bolts::Injector::Store::Array - Inject dependencies into array artifacts
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 

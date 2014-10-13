@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Acquired;
-$Bolts::Blueprint::Acquired::VERSION = '0.142650';
+$Bolts::Blueprint::Acquired::VERSION = '0.142860';
 # ABSTRACT: acquire an artifact via a path and locator
 
 use Moose;
@@ -57,7 +57,7 @@ Bolts::Blueprint::Acquired - acquire an artifact via a path and locator
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 

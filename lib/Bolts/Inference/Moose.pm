@@ -1,5 +1,5 @@
 package Bolts::Inference::Moose;
-$Bolts::Inference::Moose::VERSION = '0.142650';
+$Bolts::Inference::Moose::VERSION = '0.142860';
 # ABSTRACT: Inference engine for Moose classes
 
 use Moose;
@@ -37,10 +37,11 @@ sub infer {
             next ATTR;
         }
 
+        my $isa = $attr->type_constraint;
         push @parameters, {
             key        => $key,
             inject_via => [ 'injector', $preferred_injector ],
-            isa        => $attr->type_constraint,
+            (defined $isa ? (isa => $isa) : ()),
             required   => $attr->is_required,
         };
     }
@@ -62,7 +63,7 @@ Bolts::Inference::Moose - Inference engine for Moose classes
 
 =head1 VERSION
 
-version 0.142650
+version 0.142860
 
 =head1 SYNOPSIS
 
