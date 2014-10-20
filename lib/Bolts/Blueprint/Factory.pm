@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Factory;
-$Bolts::Blueprint::Factory::VERSION = '0.142860';
+$Bolts::Blueprint::Factory::VERSION = '0.142930';
 # ABSTRACT: Build an artifact by calling a class method on a class
 
 use Moose;
@@ -49,7 +49,7 @@ Bolts::Blueprint::Factory - Build an artifact by calling a class method on a cla
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

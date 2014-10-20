@@ -1,5 +1,5 @@
 package Bolts::Util;
-$Bolts::Util::VERSION = '0.142860';
+$Bolts::Util::VERSION = '0.142930';
 # ABSTRACT: Utilities helpful for use with Bolts
 
 use Moose ();
@@ -70,7 +70,7 @@ Bolts::Util - Utilities helpful for use with Bolts
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

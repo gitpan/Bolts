@@ -1,5 +1,5 @@
 package Bolts::Meta::Locator;
-$Bolts::Meta::Locator::VERSION = '0.142860';
+$Bolts::Meta::Locator::VERSION = '0.142930';
 # ABSTRACT: Standard meta locator for Bolts
 
 use Moose;
@@ -100,6 +100,16 @@ sub _build_blueprint {
                 my ($self, $bag, %o) = @_;
                 Class::Load::load_class('Bolts::Blueprint::Factory');
                 Bolts::Blueprint::Factory->new(%o);
+            },
+        ),
+    );
+
+    $bp->add_artifact(
+        parent_bag => Bolts::Artifact::Thunk->new(
+            thunk => sub {
+                my ($self, $bag, %o) = @_;
+                Class::Load::load_class('Bolts::Blueprint::ParentBag');
+                Bolts::Blueprint::ParentBag->new(%o);
             },
         ),
     );
@@ -304,7 +314,7 @@ Bolts::Meta::Locator - Standard meta locator for Bolts
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 

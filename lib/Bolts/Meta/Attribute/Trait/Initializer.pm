@@ -1,5 +1,5 @@
 package Bolts::Meta::Attribute::Traits::Initializer;
-$Bolts::Meta::Attribute::Traits::Initializer::VERSION = '0.142860';
+$Bolts::Meta::Attribute::Traits::Initializer::VERSION = '0.142930';
 # ABSTRACT: Build an attribute with an initializer
 
 use Moose::Role;
@@ -109,7 +109,7 @@ Bolts::Meta::Attribute::Traits::Initializer - Build an attribute with an initial
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 

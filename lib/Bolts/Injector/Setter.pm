@@ -1,5 +1,5 @@
 package Bolts::Injector::Setter;
-$Bolts::Injector::Setter::VERSION = '0.142860';
+$Bolts::Injector::Setter::VERSION = '0.142930';
 # ABSTRACT: Inject by calling a setter method with a value
 
 use Moose;
@@ -43,7 +43,7 @@ Bolts::Injector::Setter - Inject by calling a setter method with a value
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

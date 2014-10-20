@@ -1,5 +1,5 @@
 package Bolts::Meta::Initializer;
-$Bolts::Meta::Initializer::VERSION = '0.142860';
+$Bolts::Meta::Initializer::VERSION = '0.142930';
 # ABSTRACT: Store a path and parameters for acquisition
 
 use Moose;
@@ -55,7 +55,7 @@ Bolts::Meta::Initializer - Store a path and parameters for acquisition
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 

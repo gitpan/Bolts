@@ -1,5 +1,5 @@
 package Bolts::Artifact;
-$Bolts::Artifact::VERSION = '0.142860';
+$Bolts::Artifact::VERSION = '0.142930';
 # ABSTRACT: Tools for resolving an artifact value
 
 use Moose;
@@ -271,7 +271,7 @@ Bolts::Artifact - Tools for resolving an artifact value
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

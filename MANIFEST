@@ -18,6 +18,7 @@ lib/Bolts/Blueprint/BuiltInjector.pm
 lib/Bolts/Blueprint/Factory.pm
 lib/Bolts/Blueprint/Given.pm
 lib/Bolts/Blueprint/Literal.pm
+lib/Bolts/Blueprint/ParentBag.pm
 lib/Bolts/Blueprint/Role/Injector.pm
 lib/Bolts/Inference.pm
 lib/Bolts/Inference/Moose.pm
@@ -42,6 +43,8 @@ lib/Bolts/Scope.pm
 lib/Bolts/Scope/Prototype.pm
 lib/Bolts/Scope/Singleton.pm
 lib/Bolts/Util.pm
+t/bag-dep.t
+t/bag-nest.t
 t/bag.t
 t/basic.t
 t/dependencies.t

@@ -1,5 +1,5 @@
 package Bolts::Locator;
-$Bolts::Locator::VERSION = '0.142860';
+$Bolts::Locator::VERSION = '0.142930';
 # ABSTRACT: General purpose locator
 
 use Moose;
@@ -39,7 +39,7 @@ Bolts::Locator - General purpose locator
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

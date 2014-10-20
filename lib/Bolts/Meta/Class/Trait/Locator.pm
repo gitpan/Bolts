@@ -1,5 +1,5 @@
 package Bolts::Meta::Class::Trait::Locator;
-$Bolts::Meta::Class::Trait::Locator::VERSION = '0.142860';
+$Bolts::Meta::Class::Trait::Locator::VERSION = '0.142930';
 # ABSTRACT: Metaclass role for objects that have a meta locator
 
 use Moose::Role;
@@ -39,7 +39,7 @@ Bolts::Meta::Class::Trait::Locator - Metaclass role for objects that have a meta
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 

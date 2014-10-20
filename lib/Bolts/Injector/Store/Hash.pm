@@ -1,5 +1,5 @@
 package Bolts::Injector::Store::Hash;
-$Bolts::Injector::Store::Hash::VERSION = '0.142860';
+$Bolts::Injector::Store::Hash::VERSION = '0.142930';
 # ABSTRACT: Inject values into a hash
 
 use Moose;
@@ -36,7 +36,7 @@ Bolts::Injector::Store::Hash - Inject values into a hash
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

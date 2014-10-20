@@ -1,11 +1,19 @@
 package Bolts::Meta::Class::Trait::Bag;
-$Bolts::Meta::Class::Trait::Bag::VERSION = '0.142860';
+$Bolts::Meta::Class::Trait::Bag::VERSION = '0.142930';
 # ABSTRACT: Metaclass role for Bolts-built bags
 
 use Moose::Role;
 
 use Safe::Isa;
 use Scalar::Util qw( reftype );
+
+
+has artifacts => (
+    is          => 'ro',
+    isa         => 'ArrayRef',
+    required    => 1,
+    default     => sub { [] },
+);
 
 
 has such_that_isa => (
@@ -121,13 +129,17 @@ Bolts::Meta::Class::Trait::Bag - Metaclass role for Bolts-built bags
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 
 While a bag may be any kind of object, this metaclass role on a bag provides some helpful utilities for creating and managing bags.
 
 =head1 ATTRIBUTES
+
+=head2 artifacts
+
+These are the artifacts that have been added to this bag.
 
 =head2 such_that_isa
 

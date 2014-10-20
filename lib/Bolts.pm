@@ -1,5 +1,5 @@
 package Bolts;
-$Bolts::VERSION = '0.142860';
+$Bolts::VERSION = '0.142930';
 # ABSTRACT: An Inversion of Control framework for Perl
 
 use Moose ();
@@ -38,10 +38,25 @@ Moose::Exporter->setup_import_methods(
     },
     base_class_roles => [ 'Bolts::Role::SelfLocator' ],
     with_meta => [ qw(
-        artifact bag builder contains dep option such_that_each value
+        artifact bag builder contains dep option self such_that_each value
     ) ],
     also => 'Moose',
 );
+
+sub init_meta {
+    my $class = shift;
+    my $meta = Moose->init_meta(@_);
+
+    $meta->add_attribute(__top => (
+        reader   => '__top',
+        required => 1,
+        default  => sub { shift },
+        lazy     => 1,
+        weak_ref => 1,
+    ));
+
+    return $meta;
+}
 
 sub _bag_meta {
     my ($meta) = @_;
@@ -115,6 +130,12 @@ sub artifact {
         # Is it an acquired?
         elsif (defined $params{path} && $params{path}) {
             $blueprint_name = 'acquired';
+
+            $params{path} = [ $params{path} ] unless ref $params{path} eq 'ARRAY';
+
+            my @path = ('__top', @{ $params{path} });
+
+            $params{path} = \@path;
         }
 
         # Is it a literal?
@@ -252,7 +273,17 @@ sub bag {
     $meta = _bag_meta($meta);
 
     my $def = $partial_def->($name);
-    $meta->add_artifact($name, sub { $def });
+    $meta->add_artifact(
+        $name => Bolts::Artifact::Thunk->new(
+           thunk =>  sub { 
+                my ($self, $bag, $name, %params) = @_;
+                return $def->name->new( 
+                    __parent => $bag,
+                    %params,
+                );
+            },
+        )
+    );
 }
 
 sub contains(&;$) {
@@ -271,12 +302,31 @@ sub contains(&;$) {
         );
         push @BAG_META, $bag_meta;
 
+        $bag_meta->add_attribute(__parent => (
+            reader   => '__parent',
+            required => 1,
+            default  => sub { Carp::confess('why are we here?') },
+            weak_ref => 1,
+        ));
+
+        $bag_meta->add_artifact(
+            __top => Bolts::Artifact->new(
+                meta_locator => $bag_meta,
+                name         => '__top',
+                blueprint    => $bag_meta->acquire('blueprint', 'acquired', {
+                    path => [ '__parent', '__top' ],
+                }),
+                scope        => $bag_meta->acquire('scope', 'prototype'),
+            )
+        );
+
         $code->($bag_meta);
 
         pop @BAG_META;
 
         $bag_meta->finish_bag;
-        return $bag_meta->name->new;
+
+        return $bag_meta;
     };
 }
 
@@ -300,8 +350,12 @@ sub builder(&) {
 
 
 sub dep($) {
-    my ($meta, @path) = @_;
+    my ($meta, $path) = @_;
     $meta = _bag_meta($meta);
+
+    $path = [ $path ] unless ref $path eq 'ARRAY';
+
+    my @path = ('__top', @$path);
 
     return {
         blueprint => $meta->acquire('blueprint', 'acquired', {
@@ -338,6 +392,16 @@ sub value($) {
 }
 
 
+sub self() {
+    my ($meta) = @_;
+    $meta = _bag_meta($meta);
+
+    return {
+        blueprint => $meta->acquire('blueprint', 'parent_bag'),
+    };
+}
+
+
 1;
 
 __END__
@@ -352,7 +416,7 @@ Bolts - An Inversion of Control framework for Perl
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 
@@ -547,13 +611,24 @@ Helper to allow a dependency to be passed as a given option to the call to L<Bol
 
     artifact name => (
         ...
-        depedencies => {
+        parameters => {
             thing => value 42,
         },
     );
 
 Helper that passes a literal value through as a dependency to the artifact
 during injection.
+
+=head2 self
+
+    artifact thing => (
+        ...
+        parameters => {
+            parent => self, 
+        },
+    );
+
+Sets up a blueprint to return the artifact's parent.    
 
 =head1 GLOBALS
 
@@ -564,6 +639,7 @@ B<Subject to Change:> This is the name of the locator to use for locating the me
 This is variable likely to change or disappear in the future.
 
 =for Pod::Coverage     contains
+    init_meta
 
 =head1 AUTHOR
 

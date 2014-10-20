@@ -1,5 +1,5 @@
 package Bolts::Bag;
-$Bolts::Bag::VERSION = '0.142860';
+$Bolts::Bag::VERSION = '0.142930';
 # ABSTRACT: Helper for creating bags containing artifacts
 
 use Moose;
@@ -98,7 +98,7 @@ Bolts::Bag - Helper for creating bags containing artifacts
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

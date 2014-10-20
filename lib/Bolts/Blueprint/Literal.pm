@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Literal;
-$Bolts::Blueprint::Literal::VERSION = '0.142860';
+$Bolts::Blueprint::Literal::VERSION = '0.142930';
 # ABSTRACT: A blueprint that points to a literal value
 
 use Moose;
@@ -40,7 +40,7 @@ Bolts::Blueprint::Literal - A blueprint that points to a literal value
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

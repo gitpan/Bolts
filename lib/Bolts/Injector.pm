@@ -1,5 +1,5 @@
 package Bolts::Injector;
-$Bolts::Injector::VERSION = '0.142860';
+$Bolts::Injector::VERSION = '0.142930';
 # ABSTRACT: inject options and parameters into artifacts
 
 use Moose::Role;
@@ -118,7 +118,7 @@ Bolts::Injector - inject options and parameters into artifacts
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

@@ -1,5 +1,5 @@
 package Bolts::Role::RootLocator;
-$Bolts::Role::RootLocator::VERSION = '0.142860';
+$Bolts::Role::RootLocator::VERSION = '0.142930';
 # ABSTRACT: Interface for locating artifacts from some root bag
 
 use Moose::Role;
@@ -13,6 +13,7 @@ use Safe::Isa;
 use Scalar::Util ();
 
 
+# TODO Rename root to something better.
 requires 'root';
 
 
@@ -21,9 +22,9 @@ sub acquire {
     # use Data::Dumper;
     # Carp::cluck(Dumper(\@path));
 
-    my $parameters = {};
+    my $options = {};
     if (@path > 1 and ref $path[-1]) {
-        $parameters = pop @path;
+        $options = pop @path;
     }
     
     my $current_path = '';
@@ -34,7 +35,7 @@ sub acquire {
 
         my $bag = $item;
         $item = $self->_get_from($bag, $component, $current_path);
-        $item = $self->resolve($bag, $item, $parameters);
+        $item = $self->resolve($bag, $item, $options);
 
         $current_path .= ' ' if $current_path;
         $current_path .= qq["$component"];
@@ -47,15 +48,15 @@ sub acquire {
 sub acquire_all {
     my ($self, @path) = @_;
 
-    my $parameters = {};
+    my $options = {};
     if (@path > 1 and ref $path[-1]) {
-        $parameters = pop @path;
+        $options = pop @path;
     }
     
     my $bag = $self->acquire(@path);
     if (ref $bag eq 'ARRAY') {
         return [
-            map { $self->resolve($bag, $_, $parameters) } @$bag
+            map { $self->resolve($bag, $_, $options) } @$bag
         ];
     }
 
@@ -66,9 +67,9 @@ sub acquire_all {
 
 
 sub resolve {
-    my ($self, $bag, $item, $parameters) = @_;
+    my ($self, $bag, $item, $options) = @_;
 
-    return $item->get($bag, %$parameters)
+    return $item->get($bag, %$options)
         if $item->$_can('does')
        and $item->$_does('Bolts::Role::Artifact');
 
@@ -132,7 +133,7 @@ Bolts::Role::RootLocator - Interface for locating artifacts from some root bag
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 DESCRIPTION
 
@@ -154,13 +155,17 @@ L<Bolts::Role::Locator>
 
 This is the object to use as the bag to start searching. It may be an object, a reference to an array, or a reference to a hash.
 
+B<Caution:> This will be renamed in the future.
+
 =head1 METHODS
 
 =head2 acquire
 
-    my $artifact = $loc->acquire(\@path);
+    my $artifact = $loc->acquire(@path, \%options);
 
 Given a C<@path> of symbol names to traverse, this goes through each artifact in turn, resolves it, if necessary, and then continues to the next path component.
+
+After it finds the artifact, it will resolve the artifact using the L</resolve> method, which is passed the (optional) B<%options>.
 
 When complete, the complete, resolved artifact found is returned.
 

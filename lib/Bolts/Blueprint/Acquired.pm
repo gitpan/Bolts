@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Acquired;
-$Bolts::Blueprint::Acquired::VERSION = '0.142860';
+$Bolts::Blueprint::Acquired::VERSION = '0.142930';
 # ABSTRACT: acquire an artifact via a path and locator
 
 use Moose;
@@ -32,12 +32,15 @@ sub builder {
 
     my @path = $self->has_path ? $self->full_path : $name;
     
+    my $return;
     if ($self->has_locator) {
-        return $self->locator->acquire(@path);
+        $return = $self->locator->acquire(@path);
     }
     else {
-        return locator_for($bag)->acquire(@path);
+        $return = locator_for($bag)->acquire(@path);
     }
+
+    return $return;
 }
 
 
@@ -57,7 +60,7 @@ Bolts::Blueprint::Acquired - acquire an artifact via a path and locator
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

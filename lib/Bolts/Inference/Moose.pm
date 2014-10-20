@@ -1,5 +1,5 @@
 package Bolts::Inference::Moose;
-$Bolts::Inference::Moose::VERSION = '0.142860';
+$Bolts::Inference::Moose::VERSION = '0.142930';
 # ABSTRACT: Inference engine for Moose classes
 
 use Moose;
@@ -63,7 +63,7 @@ Bolts::Inference::Moose - Inference engine for Moose classes
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 

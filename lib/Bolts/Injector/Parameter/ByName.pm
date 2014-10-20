@@ -1,5 +1,5 @@
 package Bolts::Injector::Parameter::ByName;
-$Bolts::Injector::Parameter::ByName::VERSION = '0.142860';
+$Bolts::Injector::Parameter::ByName::VERSION = '0.142930';
 # ABSTRACT: Inject parameters by name during construction
 
 use Moose;
@@ -35,7 +35,7 @@ Bolts::Injector::Parameter::ByName - Inject parameters by name during constructi
 
 =head1 VERSION
 
-version 0.142860
+version 0.142930
 
 =head1 SYNOPSIS
 
