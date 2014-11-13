@@ -1,5 +1,5 @@
 package Bolts::Scope::Singleton;
-$Bolts::Scope::Singleton::VERSION = '0.142930';
+$Bolts::Scope::Singleton::VERSION = '0.143170';
 # ABSTRACT: For artifacts that are reused for the lifetime of the bag
 
 use Moose;
@@ -41,7 +41,7 @@ Bolts::Scope::Singleton - For artifacts that are reused for the lifetime of the 
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 DESCRIPTION
 

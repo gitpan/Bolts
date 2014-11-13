@@ -1,5 +1,5 @@
 package Bolts;
-$Bolts::VERSION = '0.142930';
+$Bolts::VERSION = '0.143170';
 # ABSTRACT: An Inversion of Control framework for Perl
 
 use Moose ();
@@ -67,201 +67,10 @@ sub _bag_meta {
 }
 
 
-sub _injector {
-    my ($meta, $where, $type, $key, $params) = @_;
-
-    my %params;
-
-    if ($params->$_can('does') and $params->$_does('Bolts::Blueprint')) {
-        %params = { blueprint => $params };
-    }
-    else {
-        %params = %$params;
-    }
-
-    Carp::croak("invalid blueprint in $where $key")
-        unless $params{blueprint}->$_can('does')
-           and $params{blueprint}->$_does('Bolts::Blueprint::Role::Injector');
-
-    $params{isa}  = Moose::Util::TypeConstraints::find_or_create_isa_type_constraint($params{isa})
-        if defined $params{isa};
-    $params{does} = Moose::Util::TypeConstraints::find_or_create_does_type_constraint($params{does})
-        if defined $params{does};
-
-    $params{key} = $key;
-
-    return $meta->acquire('injector', $type, \%params);
-}
-
-# TODO This sugar requires special knowledge of the built-in blueprint
-# types. It would be slick if this was not required. On the other hand, that
-# sounds like very deep magic and that might just be taking the magic too far.
 sub artifact {
     my $meta = _bag_meta(shift);
-    my $name = shift;
-
-    # No arguments means it's acquired with given parameters
-    my $blueprint_name;
-    my %params;
-    if (@_ == 0) {
-        $blueprint_name = 'acquired';
-        $params{path}   = [ "__auto_$name" ];
-        $meta->add_attribute("__auto_$name" =>
-            is       => 'ro',
-            init_arg => $name,
-        );
-    }
-
-    # One argument means it's a literal
-    elsif (@_ == 1) {
-        $blueprint_name = 'literal';
-        $params{value} = $_[0];
-    }
-
-    # Otherwise, we gotta figure out what it is...
-    else {
-        %params = @_;
-
-        # Is the service class named?
-        if (defined $params{blueprint}) {
-            $blueprint_name = delete $params{blueprint};
-        }
-
-        # Is it an acquired?
-        elsif (defined $params{path} && $params{path}) {
-            $blueprint_name = 'acquired';
-
-            $params{path} = [ $params{path} ] unless ref $params{path} eq 'ARRAY';
-
-            my @path = ('__top', @{ $params{path} });
-
-            $params{path} = \@path;
-        }
-
-        # Is it a literal?
-        elsif (exists $params{value}) {
-            $blueprint_name = 'literal';
-        }
-
-        # Is it a factory blueprint?
-        elsif (defined $params{class}) {
-            $blueprint_name = 'factory';
-        }
-
-        # Is it a builder blueprint?
-        elsif (defined $params{builder}) {
-            $blueprint_name = 'built';
-        }
-
-        else {
-            Carp::croak("unable to determine what kind of service $name is in ", $meta->name);
-        }
-    }
-
-    my @injectors;
-    if (defined $params{parameters}) {
-        my $parameters = delete $params{parameters};
-
-        if ($parameters->$_does('Bolts::Blueprint')) {
-            push @injectors, _injector(
-                $meta, 'parameters', 'parameter_position',
-                '0', { blueprint => $parameters },
-            );
-        }
-        elsif (ref $parameters eq 'HASH') {
-            for my $key (keys %$parameters) {
-                push @injectors, _injector(
-                    $meta, 'parameters', 'parameter_name', 
-                    $key, $parameters->{$key},
-                );
-            }
-        }
-        elsif (ref $parameters eq 'ARRAY') {
-            my $key = 0;
-            for my $params (@$parameters) {
-                push @injectors, _injector(
-                    $meta, 'parameters', 'parameter_position',
-                    $key++, $params,
-                );
-            }
-        }
-        else {
-            Carp::croak("parameters must be a blueprint, an array of blueprints, or a hash with blueprint values");
-        }
-    }
-
-    if (defined $params{setters}) {
-        my $setters = delete $params{setters};
-
-        for my $key (keys %$setters) {
-            push @injectors, _injector(
-                $meta, 'setters', 'setter',
-                $key, $setters->{$key},
-            );
-        }
-    }
-
-    if (defined $params{indexes}) {
-        my $indexes = delete $params{indexes};
-
-        while (my ($index, $def) = splice @$indexes, 0, 2) {
-            if (!Scalar::Util::blessed($def) && Scalar::Util::reftype($def) eq 'HASH') {
-                $def->{position} //= $index;
-            }
-
-            push @injectors, _injector(
-                $meta, 'indexes', 'store_array',
-                $index, $def,
-            );
-        }
-    }
-
-    if (defined $params{push}) {
-        my $push = delete $params{push};
-
-        my $i = 0;
-        for my $def (@$push) {
-            my $key = $def->{key} // $i;
-
-            push @injectors, _injector(
-                $meta, 'push', 'store_array',
-                $key, $def,
-            );
-
-            $i++;
-        }
-    }
-
-    if (defined $params{keys}) {
-        my $keys = delete $params{keys};
-
-        for my $key (keys %$keys) {
-            push @injectors, _injector(
-                $meta, 'keys', 'store_hash',
-                $key, $keys->{$key},
-            );
-        }
-    }
-
-    # TODO Remember the service for introspection
-
-    my $scope_name = delete $params{scope} // '_';
-    my $infer      = delete $params{infer} // 'none';
-
-    my $scope      = $meta->acquire('scope', $scope_name);
-
-    my $blueprint  = $meta->acquire('blueprint', $blueprint_name, \%params);
-
-    my $artifact = Bolts::Artifact->new(
-        meta_locator => $meta,
-        name         => $name,
-        blueprint    => $blueprint,
-        scope        => $scope,
-        infer        => $infer,
-        injectors    => \@injectors,
-    );
-
-    $meta->add_artifact($name, $artifact);
+    my $artifact = Bolts::Util::artifact($meta, @_);
+    $meta->add_artifact($artifact->name, $artifact);
     return;
 }
 
@@ -393,8 +202,7 @@ sub value($) {
 
 
 sub self() {
-    my ($meta) = @_;
-    $meta = _bag_meta($meta);
+    my ($meta, $value) = @_;
 
     return {
         blueprint => $meta->acquire('blueprint', 'parent_bag'),
@@ -416,7 +224,7 @@ Bolts - An Inversion of Control framework for Perl
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 
@@ -442,11 +250,11 @@ This is yet another Inversion of Control framework for Perl. This one is based u
 
 =head2 Inversion of Control
 
-For those who might now know what Inversion of Control (IOC) is, it is a design pattern aimed at helping you decouple your code, automate parts of the configuration assembly, and manage the life cycle of your objects.
+For those who might not know what Inversion of Control (IOC) is, it is a design pattern aimed at helping you decouple your code, automate parts of the configuration assembly, and manage the life cycle of your objects.
 
 By using an IOC framework, the objects in your program need to know less about the other objects in your application. Your objects can focus on knowing what it needs from other objects without knowing where to find objects that do that or how they are configured. 
 
-For example, early in a programs lifetime, the logger might be a local object that writes directly to a file. Later, it might be an object with the same interface, but it writes to syslog. Further on, it might be some sort of logging service that is accessed over the network through a stub provided by a service locator. If your program uses an IOC framework, the configuration files for your IOC will change to pass a different object to the application during each phase, but the program itself might not change at all.
+For example, early in a program's lifetime, the logger might be a local object that writes directly to a file. Later, it might be an object with the same interface, but it writes to syslog. Further on, it might be some sort of logging service that is accessed over the network through a stub provided by a service locator. If your program uses an IOC framework, the configuration files for your IOC will change to pass a different object to the application during each phase, but the program itself might not change at all.
 
 An IOC framework also helps you assemble complex configuration related to your application. It can join various configurations together in interesting and complex ways automatically.
 
@@ -466,7 +274,7 @@ Artifacts are grouped into bags. A B<bag> can be any object, hash reference, or 
 
 =head2 Locators
 
-A B<locator> is an object that finds things in a bag (these are things related to L<Bolts::Role::Locator>. The finding process is called, B<acquisition>. (If you are familiar with Harry Potter, this process is similar to Harry Potter using a wand to extract dittany from Hermione's handbag by saying "Accio Dittany.") After finding the object, the locator performs B<resolution>, which checks to see if returned artifact needs to be resolved further. (To continue the analogy, this is like unbottling the dittany and pouring it out, there may be another step before the artifact is completely ready for use.)
+A B<locator> is an object that finds things in a bag (these are things related to L<Bolts::Role::Locator>. The finding process is called, B<acquisition>. (If you are familiar with Harry Potter, this process is similar to Harry Potter using a wand to extract dittany from Hermione's handbag by saying "Accio Dittany.") After finding the object, the locator performs B<resolution>, which checks to see if the returned artifact needs to be resolved further. (To continue the analogy, this is like unbottling the dittany and pouring it out, there may be another step before the artifact is completely ready for use.)
 
 =head2 Blueprints
 
@@ -636,7 +444,7 @@ Sets up a blueprint to return the artifact's parent.
 
 B<Subject to Change:> This is the name of the locator to use for locating the meta objects needed to configure within Bolts. The default is L<Bolts::Meta::Locator>, which defines the standard set of scopes, blueprints, etc.
 
-This is variable likely to change or disappear in the future.
+This variable likely to change or disappear in the future.
 
 =for Pod::Coverage     contains
     init_meta

@@ -1,5 +1,5 @@
 package Bolts::Scope::Prototype;
-$Bolts::Scope::Prototype::VERSION = '0.142930';
+$Bolts::Scope::Prototype::VERSION = '0.143170';
 # ABSTRACT: For artifacts that are constructed at every request
 
 use Moose;
@@ -24,7 +24,7 @@ Bolts::Scope::Prototype - For artifacts that are constructed at every request
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 DESCRIPTION
 

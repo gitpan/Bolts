@@ -1,5 +1,5 @@
 package Bolts::Role::Locator;
-$Bolts::Role::Locator::VERSION = '0.142930';
+$Bolts::Role::Locator::VERSION = '0.143170';
 # ABSTRACT: Interface for locating artifacts in a bag
 
 use Moose::Role;
@@ -30,7 +30,7 @@ Bolts::Role::Locator - Interface for locating artifacts in a bag
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 DESCRIPTION
 

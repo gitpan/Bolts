@@ -1,5 +1,5 @@
 package Bolts::Blueprint;
-$Bolts::Blueprint::VERSION = '0.142930';
+$Bolts::Blueprint::VERSION = '0.143170';
 # ABSTRACT: Defines the interface implemented by blueprints
 
 use Moose::Role;
@@ -36,7 +36,7 @@ Bolts::Blueprint - Defines the interface implemented by blueprints
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 

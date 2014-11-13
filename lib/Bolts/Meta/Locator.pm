@@ -1,5 +1,5 @@
 package Bolts::Meta::Locator;
-$Bolts::Meta::Locator::VERSION = '0.142930';
+$Bolts::Meta::Locator::VERSION = '0.143170';
 # ABSTRACT: Standard meta locator for Bolts
 
 use Moose;
@@ -314,7 +314,7 @@ Bolts::Meta::Locator - Standard meta locator for Bolts
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 DESCRIPTION
 

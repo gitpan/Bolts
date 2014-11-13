@@ -1,5 +1,5 @@
 package Bolts::Role::Initializer;
-$Bolts::Role::Initializer::VERSION = '0.142930';
+$Bolts::Role::Initializer::VERSION = '0.143170';
 # ABSTRACT: Give components some control over their destiny
 
 use Moose::Role;
@@ -27,7 +27,7 @@ Bolts::Role::Initializer - Give components some control over their destiny
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 

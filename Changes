@@ -1,3 +1,17 @@
+0.143170  2014-11-13 10:22:18-06:00 America/Chicago
+
+    * Bugfix: The self() helper was missing from the Bolts package.
+    * Adding Bolts:Util::artifact() as a generalized abstraction of the Bolts
+      sugar (so it can be shared with Bolts::Role)
+    * Fleshing out the artifacts accessor of Bolts::Meta::Class::Trait::Bag,
+      which had been mentioned in the documentation previously, but had not yet
+      been implemented.
+    * Add Bolts::Role::Opaque to hide the internals of an artifact from locators
+      during aquisition.
+    * Better checking on keys and indexes when locating within an array or hash.
+    * During acquisition, if one of the acquired items is a locator, pass
+      control of acquisition to the nested locator.
+
 0.142930  2014-10-20 11:17:32CDT-0500 America/Chicago
 
     * Interface Change: The dep() sugar method in Bolts now uses paths that are

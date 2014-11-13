@@ -1,5 +1,5 @@
 package Bolts::Blueprint::BuiltInjector;
-$Bolts::Blueprint::BuiltInjector::VERSION = '0.142930';
+$Bolts::Blueprint::BuiltInjector::VERSION = '0.143170';
 # ABSTRACT: An injector-oriented builder using a subroutine
 
 use Moose;
@@ -41,7 +41,7 @@ Bolts::Blueprint::BuiltInjector - An injector-oriented builder using a subroutin
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 

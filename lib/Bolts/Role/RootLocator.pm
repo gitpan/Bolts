@@ -1,5 +1,5 @@
 package Bolts::Role::RootLocator;
-$Bolts::Role::RootLocator::VERSION = '0.142930';
+$Bolts::Role::RootLocator::VERSION = '0.143170';
 # ABSTRACT: Interface for locating artifacts from some root bag
 
 use Moose::Role;
@@ -36,6 +36,11 @@ sub acquire {
         my $bag = $item;
         $item = $self->_get_from($bag, $component, $current_path);
         $item = $self->resolve($bag, $item, $options);
+
+        # If the $item is a locator, pass control of the process to that
+        if (@path && $item->$_can('does') && $item->$_does('Bolts::Role::Locator')) {
+            $item->acquire(@path, $options);
+        }
 
         $current_path .= ' ' if $current_path;
         $current_path .= qq["$component"];
@@ -92,11 +97,17 @@ sub _get_from {
     # A bag can be any blessed object...
     if (Scalar::Util::blessed($bag)) {
 
+        # If it is marked as an Opaque object, we can't locate within it
+        if ($bag->can('does') && $bag->does('Bolts::Role::Opaque')) {
+            Carp::croak(qq{may not examine "$component" at opaque path [$current_path]});
+        }
+
         # So long as it has that method
-        if ($bag->can($component)) {
+        elsif ($bag->can($component)) {
             return $bag->$component;
         }
         
+        # We don't know how to deal with it otherwise
         else {
             Carp::croak(qq{no artifact named "$component" at [$current_path]});
         }
@@ -104,12 +115,22 @@ sub _get_from {
 
     # Or any unblessed hash
     elsif (ref $bag eq 'HASH') {
-        return $bag->{ $component };
+        if (exists $bag->{ $component }) {
+            return $bag->{ $component };
+        }
+        else {
+            Carp::croak(qq{no artifact keyed "$component" at [$current_path]});
+        }
     }
 
     # Or any unblessed array
     elsif (ref $bag eq 'ARRAY') {
-        return $bag->[ $component ];
+        if ($component =~ /^\d+$/ && @{ $bag } > $component) {
+            return $bag->[ $component ];
+        }
+        else {
+            Carp::croak(qq{no artifact indexed "$component" at [$current_path]});
+        }
     }
 
     # But nothing else...
@@ -133,7 +154,7 @@ Bolts::Role::RootLocator - Interface for locating artifacts from some root bag
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 DESCRIPTION
 
@@ -168,6 +189,48 @@ Given a C<@path> of symbol names to traverse, this goes through each artifact in
 After it finds the artifact, it will resolve the artifact using the L</resolve> method, which is passed the (optional) B<%options>.
 
 When complete, the complete, resolved artifact found is returned.
+
+Acquisition in this implementation proceeds according to the following rules:
+
+=over
+
+=item 1.
+
+If the bag is an object:
+
+=over
+
+=item *
+
+If the object implements the L<Bolts::Role::Opaque> role, lookup will end in an error.
+
+=item *
+
+If the object implements the L<Bolts::Role::Locator> role, control of the lookup for the remaining components in C<@path> will pass over to that object.
+
+=item *
+
+If the C<can> method on the object returns false for the next component in C<@path>, lookup will end in an error.
+
+=item *
+
+Finally, the method named in the next component in C<@path> will be called and the result used as either the value to resolve or the next bag to locate within (repeating this process).
+
+=back
+
+=item 2.
+
+If the bag is a hash, the name of the next component in C<@path> will be used as a key in the hash to find the next value to resolve or the next bag to locate within.
+
+=item 3.
+
+If the bag is an array and the name of the next component in C<@path> is a number, it will be used as the index to fetch from the array to use as the value to resolve or the next bag to locate within.
+
+=item 4.
+
+Anything else will result in lookup ending in an error.
+
+=back
 
 =head2 acquire_all
 

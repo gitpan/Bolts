@@ -1,5 +1,5 @@
 package Bolts::Inference;
-$Bolts::Inference::VERSION = '0.142930';
+$Bolts::Inference::VERSION = '0.143170';
 # ABSTRACT: This is the interface for inferring injectors from a blueprint
 
 use Moose::Role;
@@ -21,7 +21,7 @@ Bolts::Inference - This is the interface for inferring injectors from a blueprin
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 

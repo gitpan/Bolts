@@ -1,5 +1,5 @@
 package Bolts::Blueprint::ParentBag;
-$Bolts::Blueprint::ParentBag::VERSION = '0.142930';
+$Bolts::Blueprint::ParentBag::VERSION = '0.143170';
 # ABSTRACT: Retrieve the artifact's parent as the artifact
 
 use Moose;
@@ -29,7 +29,7 @@ Bolts::Blueprint::ParentBag - Retrieve the artifact's parent as the artifact
 
 =head1 VERSION
 
-version 0.142930
+version 0.143170
 
 =head1 SYNOPSIS
 
