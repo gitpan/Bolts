@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Role::Injector;
-$Bolts::Blueprint::Role::Injector::VERSION = '0.143170';
+$Bolts::Blueprint::Role::Injector::VERSION = '0.143171';
 # ABSTRACT: Tags a blueprint as being usable during injection
 
 use Moose::Role;
@@ -22,7 +22,7 @@ Bolts::Blueprint::Role::Injector - Tags a blueprint as being usable during injec
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 DESCRIPTION
 

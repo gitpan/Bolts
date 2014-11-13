@@ -1,5 +1,5 @@
 package Bolts::Scope;
-$Bolts::Scope::VERSION = '0.143170';
+$Bolts::Scope::VERSION = '0.143171';
 # ABSTRACT: The interface for lifecycle managers
 
 use Moose::Role;
@@ -22,7 +22,7 @@ Bolts::Scope - The interface for lifecycle managers
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 DESCRIPTION
 

@@ -1,5 +1,5 @@
 package Bolts::Role::Opaque;
-$Bolts::Role::Opaque::VERSION = '0.143170';
+$Bolts::Role::Opaque::VERSION = '0.143171';
 # ABSTRACT: Make a bag/artifact opaque to acquisition
 
 use Moose::Role;
@@ -19,7 +19,7 @@ Bolts::Role::Opaque - Make a bag/artifact opaque to acquisition
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 SYNOPSIS
 

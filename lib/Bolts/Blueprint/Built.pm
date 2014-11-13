@@ -1,5 +1,5 @@
 package Bolts::Blueprint::Built;
-$Bolts::Blueprint::Built::VERSION = '0.143170';
+$Bolts::Blueprint::Built::VERSION = '0.143171';
 # ABSTRACT: Build an artifact by running a subroutine
 
 use Moose;
@@ -39,7 +39,7 @@ Bolts::Blueprint::Built - Build an artifact by running a subroutine
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 SYNOPSIS
 

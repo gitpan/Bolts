@@ -45,6 +45,7 @@ lib/Bolts/Scope/Prototype.pm
 lib/Bolts/Scope/Singleton.pm
 lib/Bolts/Util.pm
 t/bad-index-key.t
+t/bag-acquire_all.t
 t/bag-dep.t
 t/bag-nest.t
 t/bag.t

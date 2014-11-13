@@ -1,5 +1,5 @@
 package Bolts::Role::RootLocator;
-$Bolts::Role::RootLocator::VERSION = '0.143170';
+$Bolts::Role::RootLocator::VERSION = '0.143171';
 # ABSTRACT: Interface for locating artifacts from some root bag
 
 use Moose::Role;
@@ -58,15 +58,21 @@ sub acquire_all {
         $options = pop @path;
     }
     
-    my $bag = $self->acquire(@path);
-    if (ref $bag eq 'ARRAY') {
+    my $bag = $self->acquire(@path, $options);
+    if ('ARRAY' eq ref $bag) {
         return [
             map { $self->resolve($bag, $_, $options) } @$bag
         ];
     }
 
+    elsif ('HASH' eq ref $bag) {
+        return [
+            map { $self->resolve($bag, $_, $options) } values %$bag
+        ];
+    }
+
     else {
-        return [];
+        return [ $bag ];
     }
 }
 
@@ -79,12 +85,6 @@ sub resolve {
        and $item->$_does('Bolts::Role::Artifact');
 
     return $item;
-}
-
-
-sub get {
-    my ($self, $component) = @_;
-    return $self->_get_from($self->root, $component);
 }
 
 sub _get_from {
@@ -154,7 +154,7 @@ Bolts::Role::RootLocator - Interface for locating artifacts from some root bag
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 DESCRIPTION
 
@@ -236,21 +236,13 @@ Anything else will result in lookup ending in an error.
 
     my @artifacts = @{ $loc->acquire_all(\@path) };
 
-This is similar to L<acquire>, but if the last bag is a reference to an array, then all the artifacts within that bag are acquired, resolved, and returned as a reference to an array.
-
-If the last item found at the path is not an array, it returns an empty list.
+This is similar to L<acquire>, but returns the value as a reference to an array of resolved artifacts.
 
 =head2 resolve
 
     my $resolved_artifact = $loc->resolve($bag, $artifact, \%options);
 
 After the artifact has been found, this method resolves the a partial artifact implementing the L<Bolts::Role::Artifact> and turns it into the complete artifact.
-
-=head2 get
-
-    my $artifact = $log->get($component);
-
-Given a single symbol name as the path component to find during acquisition it returns the partial artifact for it. This artifact is incomplete and still needs to be resolved.
 
 =head1 AUTHOR
 

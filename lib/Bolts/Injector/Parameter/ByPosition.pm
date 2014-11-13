@@ -1,5 +1,5 @@
 package Bolts::Injector::Parameter::ByPosition;
-$Bolts::Injector::Parameter::ByPosition::VERSION = '0.143170';
+$Bolts::Injector::Parameter::ByPosition::VERSION = '0.143171';
 # ABSTRACT: Inject parameters by position during construction
 
 use Moose;
@@ -26,7 +26,7 @@ Bolts::Injector::Parameter::ByPosition - Inject parameters by position during co
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 SYNOPSIS
 

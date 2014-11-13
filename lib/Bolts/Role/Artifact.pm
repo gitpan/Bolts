@@ -1,5 +1,5 @@
 package Bolts::Role::Artifact;
-$Bolts::Role::Artifact::VERSION = '0.143170';
+$Bolts::Role::Artifact::VERSION = '0.143171';
 # ABSTRACT: The role implemented by resolved artifacts
 
 use Moose::Role;
@@ -24,11 +24,13 @@ Bolts::Role::Artifact - The role implemented by resolved artifacts
 
 =head1 VERSION
 
-version 0.143170
+version 0.143171
 
 =head1 DESCRIPTION
 
 An artifact can be any kind of object. However, during acquistion, the resolution phase is only performed on objects implementing this role. Resolution allows the artifact to make decisions about how to construct, inject dependencies, and cache the object.
+
+See L<Bolts::Artifact> for the reference implementation of this method. L<Bolts::Artifact::Thunk> provides a second, simpler, and less featureful implementation.
 
 =head1 REQUIRED METHODS
 
